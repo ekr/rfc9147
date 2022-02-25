@@ -417,14 +417,14 @@ unpacked RecordNumber structure, as shown below:</t>
 ]]></sourcecode>
 
       <t>This 128-bit value is used in the ACK message as well as in the "record_sequence_number"
-input to the Authenticated Encryption with Associated Data (AEAD) function.</t>
-      <t>The entire header value shown in <xref target="hdr_examples" format="default"/> (but prior to record number
+input to the Authenticated Encryption with Associated Data (AEAD) function.
+      The entire header value shown in <xref target="hdr_examples" format="default"/> (but prior to record number
 encryption; see <xref target="rne" format="default"/>) is used as the additional data value for the AEAD
 function. For instance, if the minimal variant is used,
 the Associated Data (AD) is 2 octets long. Note that this design is different from the additional data
 calculation for DTLS 1.2 and for DTLS 1.2 with Connection IDs.
 In DTLS 1.3 the 64-bit sequence_number is used as the sequence number for
-the AEAD computation; unlike DTLS 1.2, the epoch is not included. 
+the AEAD computation; unlike DTLS 1.2, the epoch is not included.
 </t>
       <section anchor="demultiplexing-dtls-records" numbered="true" toc="default">
         <name>Demultiplexing DTLS Records</name>
@@ -490,7 +490,7 @@ packet  -->  |   OCT == 25   -+--> DTLSCiphertext with CID (DTLS 1.2)
                             |     DCT == 23 -+--> Application Data
                             |     DCT == 24 -+--> Heartbeat
                             |     DCT == 26 -+--> ACK
-                            |     else ------+--? Error
+                            |     else ------+--> Error
                             +----------------+
 ]]></artwork>
         </figure>
@@ -1687,7 +1687,7 @@ protected under the appropriate application traffic key and are not included in 
 from the initial [sender]_application_traffic_secret_0. This may include
 handshake messages, such as post-handshake messages (e.g., a
 NewSessionTicket message).</li>
-          <li>Epoch values (4 to 2^16-1) are used for payloads protected using keys from
+          <li>Epoch values (4 to 2^64-1) are used for payloads protected using keys from
 the [sender]_application_traffic_secret_N (N&gt;0).</li>
         </ul>
         <t>Using these reserved epoch values, a receiver knows what cipher state
@@ -2841,7 +2841,7 @@ sequence number encryption concept is taken from QUIC <xref target="RFC9000"/>. 
 like to thank the authors of RFC 9000 for their work. <contact fullname="Felix Günther"/> and <contact fullname="Marti
  Thomson"/> contributed the analysis in <xref target="ccm-bounds" format="default"/>.
       We would like to thank <contact fullname="Jonathan Hammell"/>, <contact fullname="Bernard Aboba"/>, and <contact fullname="Andy Cunningham"/> for their review comments.</t>
-      <t>Additionally, we would like to thank the IESG members for their review comments: <contact fullname="Martin Duke"/>, <contact fullname="Erik Kline"/>, <contact fullname="Francesca Palombini"/>, <contact fullname="Lars Eggert"/>, <contact fullname="Zaheduzzaman Sarker"/>, <contact fullname="John Scudder"/>, <contact fullname="Éric Vyncke"/>, <contact fullname="Robert Wilton"/>, <contact fullname="Roman Danyliw"/>, <contact fullname="Benjamin Kaduk"/>, <contact fullname="Murray Kucherawy"/>, <contact fullname="Martin Vigoureux"/>, and <contact fullname="Alvaro Retana"/>.</t>      
+      <t>Additionally, we would like to thank the IESG members for their review comments: <contact fullname="Martin Duke"/>, <contact fullname="Erik Kline"/>, <contact fullname="Francesca Palombini"/>, <contact fullname="Lars Eggert"/>, <contact fullname="Zaheduzzaman Sarker"/>, <contact fullname="John Scudder"/>, <contact fullname="Éric Vyncke"/>, <contact fullname="Robert Wilton"/>, <contact fullname="Roman Danyliw"/>, <contact fullname="Benjamin Kaduk"/>, <contact fullname="Murray Kucherawy"/>, <contact fullname="Martin Vigoureux"/>, and <contact fullname="Alvaro Retana"/>.</t>
     </section>
 
 
