@@ -2834,6 +2834,14 @@ in prior versions of DTLS specifications or in the referenced specifications.</t
           <email>yinxinxing@huawei.com</email>
         </address>
       </contact>
+
+
+      <t> The
+sequence number encryption concept is taken from QUIC <xref target="RFC9000"/>. We would
+like to thank the authors of RFC 9000 for their work. <contact fullname="Felix Günther"/> and <contact fullname="Marti
+ Thomson"/> contributed the analysis in <xref target="ccm-bounds" format="default"/>.
+      We would like to thank <contact fullname="Jonathan Hammell"/>, <contact fullname="Bernard Aboba"/>, and <contact fullname="Andy Cunningham"/> for their review comments.</t>
+      <t>Additionally, we would like to thank the IESG members for their review comments: <contact fullname="Martin Duke"/>, <contact fullname="Erik Kline"/>, <contact fullname="Francesca Palombini"/>, <contact fullname="Lars Eggert"/>, <contact fullname="Zaheduzzaman Sarker"/>, <contact fullname="John Scudder"/>, <contact fullname="Éric Vyncke"/>, <contact fullname="Robert Wilton"/>, <contact fullname="Roman Danyliw"/>, <contact fullname="Benjamin Kaduk"/>, <contact fullname="Murray Kucherawy"/>, <contact fullname="Martin Vigoureux"/>, and <contact fullname="Alvaro Retana"/>.</t>      
     </section>
 
 
