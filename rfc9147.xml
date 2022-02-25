@@ -18,7 +18,7 @@ sortRefs="true" symRefs="true" version="3">
     <title abbrev="DTLS 1.3">The Datagram Transport Layer Security (DTLS) Protocol Version 1.3</title>
     <seriesInfo name="RFC" value="9147"/>
     <author initials="E." surname="Rescorla" fullname="Eric Rescorla">
-      <organization>RTFM, Inc.</organization>
+      <organization>Mozilla</organization>
       <address>
         <email>ekr@rtfm.com</email>
       </address>
