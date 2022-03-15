@@ -985,6 +985,8 @@ message loss, reordering, and message fragmentation.</t>
         end_of_early_data(5),
         hello_retry_request_RESERVED(6),
         encrypted_extensions(8),
+        request_connection_id(9),           /* New */
+        new_connection_id(10),              /* New */
         certificate(11),
         server_key_exchange_RESERVED(12),
         certificate_request(13),
@@ -1589,6 +1591,11 @@ a peer is persistently sending bad messages and terminate the local
 connection state after such misbehavior is detected. Note that alerts
 are not reliably transmitted; implementations <bcp14>SHOULD NOT</bcp14> depend on
 receiving alerts in order to signal errors or connection closure.</t>
+        <t>
+Any data received with an epoch/sequence number pair after
+that of a valid received closure alert MUST be ignored. Note:
+this is a change from TLS 1.3 which depends on the order of
+receipt rather than the epoch and sequence number.</t>
       </section>
       <section anchor="establishing-new-associations-with-existing-parameters" numbered="true" toc="default">
         <name>Establishing New Associations with Existing Parameters</name>
@@ -2179,7 +2186,6 @@ are treated as transparent data to the record layer.</t>
     <section anchor="security-considerations" numbered="true" toc="default">
       <name>Security Considerations</name>
       <t>Security issues are discussed primarily in <xref target="RFC8446" format="default"/>.</t>
-     <t>Security issues are also discussed in RFC 7457 <xref target="RFC7457"/>.</t>
       <t>The primary additional security consideration raised by DTLS is that
 of denial of service by excessive resource consumption.  DTLS includes a cookie exchange designed to
 protect against denial of service.  However, implementations that do
