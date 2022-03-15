@@ -977,26 +977,17 @@ message loss, reordering, and message fragmentation.</t>
 
 <sourcecode name="" type="tls-presentation"><![CDATA[
     enum {
-        hello_request_RESERVED(0),
         client_hello(1),
         server_hello(2),
-        hello_verify_request_RESERVED(3),
         new_session_ticket(4),
         end_of_early_data(5),
-        hello_retry_request_RESERVED(6),
         encrypted_extensions(8),
         request_connection_id(9),           /* New */
         new_connection_id(10),              /* New */
         certificate(11),
-        server_key_exchange_RESERVED(12),
         certificate_request(13),
-        server_hello_done_RESERVED(14),
         certificate_verify(15),
-        client_key_exchange_RESERVED(16),
         finished(20),
-        certificate_url_RESERVED(21),
-        certificate_status_RESERVED(22),
-        supplemental_data_RESERVED(23),
         key_update(24),
         message_hash(254),
         (255)
@@ -1014,15 +1005,15 @@ message loss, reordering, and message fragmentation.</t>
             case client_hello:          ClientHello;
             case server_hello:          ServerHello;
             case end_of_early_data:     EndOfEarlyData;
-            case new_session_ticket:    NewSessionTicket;
             case encrypted_extensions:  EncryptedExtensions;
-            case request_connection_id: RequestedConnectionId;
-            case new_connection_id:     NewConnectionId;
-            case certificate:           Certificate;
             case certificate_request:   CertificateRequest;
+            case certificate:           Certificate;
             case certificate_verify:    CertificateVerify;
             case finished:              Finished;
+            case new_session_ticket:    NewSessionTicket;
             case key_update:            KeyUpdate;
+            case request_connection_id: RequestConnectionId;
+            case new_connection_id:     NewConnectionId;
         } body;
     } DTLSHandshake;
 ]]></sourcecode>
@@ -2224,7 +2215,9 @@ association; any such updated addresses are not covered by the cookie exchange
 during the handshake.
 DTLS implementations <bcp14>MUST NOT</bcp14> update the address they send to in response
 to packets from a different address unless they first perform some
-reachability test; no such test is defined in this specification. Even
+reachability test; no such test is defined in this specification
+and a future specification would need to specify a complete procedure for
+how and when to update addresses. Even
 with such a test, an active on-path adversary can also black-hole traffic or
 create a reflection attack against third parties because a DTLS peer
 has no means to distinguish a genuine address update event (for
@@ -2607,6 +2600,8 @@ as specified in <xref target="aead-limits"/> of RFC 9147.
             case finished:              Finished;
             case new_session_ticket:    NewSessionTicket;
             case key_update:            KeyUpdate;
+            case request_connection_id: RequestConnectionId; 
+            case new_connection_id:     NewConnectionId;
         } body;
     } Handshake;
 
