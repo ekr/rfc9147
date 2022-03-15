@@ -2046,6 +2046,8 @@ enforce this rule. If a sending implementation receives a KeyUpdate
 with request_update set to "update_requested", it <bcp14>MUST NOT</bcp14> send
 its own KeyUpdate if that would cause it to exceed these limits
 and <bcp14>SHOULD</bcp14> instead ignore the "update_requested" flag.
+Note: this overrides the requirement in TLS 1.3 to always
+send a KeyUpdate in response to "update_requested".
       </t>
     </section>
     <section anchor="connection-id-updates" numbered="true" toc="default">
