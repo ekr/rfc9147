@@ -35,7 +35,7 @@ sortRefs="true" symRefs="true" version="3">
         <email>nagendra@cs.stanford.edu</email>
       </address>
     </author>
-    <date year="2022" month="February"/>
+    <date year="2022" month="March"/>
     <area>Security</area>
     <workgroup>TLS</workgroup>
 
@@ -242,7 +242,7 @@ The DTLS epoch serialized in DTLSPlaintext is 2 octets long for compatibility
    of the connection epoch, which is an 8 octet counter incremented on every
    KeyUpdate. See <xref target="sequence-number-and-epoch"/> for details. The sequence number is set to
    be the low order 48 bits of the 64 bit sequence number. Plaintext records
-   MUST NOT be sent with sequence numbers that would exceed 2^48-1, so the
+   <bcp14>MUST NOT</bcp14> be sent with sequence numbers that would exceed 2^48-1, so the
    upper 16 bits will always be 0.
         </li>
         <li>The DTLSCiphertext structure has a variable-length header.</li>
@@ -974,6 +974,33 @@ a server which wants to receive a CID to negotiate one.</t>
 prior to transmission they are converted to DTLSHandshake
 messages, which contain extra data needed to support
 message loss, reordering, and message fragmentation.</t>
+
+<sourcecode name="" type="tls-presentation"><![CDATA[
+    enum {
+        hello_request_RESERVED(0),
+        client_hello(1),
+        server_hello(2),
+        hello_verify_request_RESERVED(3),
+        new_session_ticket(4),
+        end_of_early_data(5),
+        hello_retry_request_RESERVED(6),
+        encrypted_extensions(8),
+        certificate(11),
+        server_key_exchange_RESERVED(12),
+        certificate_request(13),
+        server_hello_done_RESERVED(14),
+        certificate_verify(15),
+        client_key_exchange_RESERVED(16),
+        finished(20),
+        certificate_url_RESERVED(21),
+        certificate_status_RESERVED(22),
+        supplemental_data_RESERVED(23),
+        key_update(24),
+        message_hash(254),
+        (255)
+    } HandshakeType;
+]]></sourcecode>
+
 <sourcecode name="" type="tls-presentation"><![CDATA[
     struct {
         HandshakeType msg_type;    /* handshake type */
@@ -1115,7 +1142,7 @@ avoiding IP fragmentation.</t>
         <t>When transmitting the handshake message, the sender divides the
 message into a series of N contiguous data ranges. The ranges <bcp14>MUST NOT</bcp14>
 overlap.  The sender then creates N DTLSHandshake messages, all with the
-same message_seq value associated with the original handshake message.  Each new
+same message_seq value as the original DTLSHandshake message.  Each new
 message is labeled with the fragment_offset (the number of bytes
 contained in previous fragments) and the fragment_length (the length
 of this fragment).  The length field in all messages is the same as
@@ -2009,10 +2036,10 @@ Client                                             Server
 ]]></artwork>
       </figure>
       <t>
-With a 128-bit key as in AES-256, rekeying 2^64 times has a high
+With a 128-bit key as in AES-128, rekeying 2^64 times has a high
 probability of key reuse within a given connection. Note that even if
 the key repeats, the IV is also independently generated. In order to
-provide an extra margin of security, sending implementations MUST NOT
+provide an extra margin of security, sending implementations <bcp14>MUST NOT</bcp14>
 allow the epoch to exceed 2^48-1. In order to allow this value to
 be changed later, receiving implementations <bcp14>MUST NOT</bcp14>
 enforce this rule. If a sending implementation receives a KeyUpdate
@@ -2150,6 +2177,7 @@ are treated as transparent data to the record layer.</t>
     <section anchor="security-considerations" numbered="true" toc="default">
       <name>Security Considerations</name>
       <t>Security issues are discussed primarily in <xref target="RFC8446" format="default"/>.</t>
+     <t>Security issues are also discussed in RFC 7457 <xref target="RFC7457"/>.</t>
       <t>The primary additional security consideration raised by DTLS is that
 of denial of service by excessive resource consumption.  DTLS includes a cookie exchange designed to
 protect against denial of service.  However, implementations that do
@@ -2174,7 +2202,7 @@ avoid having the cookie-exchange mechanism itself serve as a DoS vector.</li>
       <t>Although the cookie must allow the server to produce the right handshake
 transcript, it <bcp14>SHOULD</bcp14> be constructed so that knowledge of the cookie
 is insufficient to reproduce the ClientHello contents. Otherwise,
-this may create problems with future extensions such as Encrypted Client Hello <xref target="TLS-ESNI" format="default"/>.</t>
+this may create problems with future extensions such as Encrypted Client Hello <xref target="TLS-ECH" format="default"/>.</t>
       <t>When cookies are generated using a keyed authentication mechanism,
 it should be possible to rotate the associated
 secret key, so that temporary compromise of the key does not permanently
@@ -2346,7 +2374,7 @@ as specified in <xref target="aead-limits"/> of RFC 9147.
 <author initials='A' surname='Kraus' fullname='Achim Kraus'>
 <organization />
 </author>
-<date year='2022' month='February' />
+<date year='2022' month='March' />
 </front>
 <seriesInfo name="RFC" value="9146"/>
 <seriesInfo name="DOI" value="10.17487/RFC9146"/>
@@ -2369,6 +2397,7 @@ as specified in <xref target="aead-limits"/> of RFC 9147.
 <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml"/>
 <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6347.xml"/>
 <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7525.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7457.xml"/>
 
 <reference anchor="AEBounds" target="https://www.isg.rhul.ac.uk/~kp/TLS-AEbounds.pdf">
           <front>
@@ -2424,7 +2453,7 @@ as specified in <xref target="aead-limits"/> of RFC 9147.
 <!-- draft-ietf-tls-esni (I-D Exists) [LB]
     Have to do "long way" to accommodate "C.A. Wood".
     Otherwise OK as of 8/9/2021 -->
-<reference anchor='TLS-ESNI'>
+<reference anchor='TLS-ECH'>
 <front>
 <title>TLS Encrypted Client Hello</title>
 <author initials='E' surname='Rescorla' fullname='Eric Rescorla'>
@@ -2482,136 +2511,136 @@ as specified in <xref target="aead-limits"/> of RFC 9147.
       <section anchor="record-layer" numbered="true" toc="default">
         <name>Record Layer</name>
 <artwork name="" type="ascii-art" align="left" alt=""><![CDATA[
-struct {
-    ContentType type;
-    ProtocolVersion legacy_record_version;
-    uint16 epoch = 0
-    uint48 sequence_number;
-    uint16 length;
-    opaque fragment[DTLSPlaintext.length];
-} DTLSPlaintext;
+    struct {
+        ContentType type;
+        ProtocolVersion legacy_record_version;
+        uint16 epoch = 0
+        uint48 sequence_number;
+        uint16 length;
+        opaque fragment[DTLSPlaintext.length];
+    } DTLSPlaintext;
 
-struct {
-     opaque content[DTLSPlaintext.length];
-     ContentType type;
-     uint8 zeros[length_of_padding];
-} DTLSInnerPlaintext;
+    struct {
+         opaque content[DTLSPlaintext.length];
+         ContentType type;
+         uint8 zeros[length_of_padding];
+    } DTLSInnerPlaintext;
 
-struct {
-    opaque unified_hdr[variable];
-    opaque encrypted_record[length];
-} DTLSCiphertext;
+    struct {
+        opaque unified_hdr[variable];
+        opaque encrypted_record[length];
+    } DTLSCiphertext;
 
-0 1 2 3 4 5 6 7
-+-+-+-+-+-+-+-+-+
-|0|0|1|C|S|L|E E|
-+-+-+-+-+-+-+-+-+
-| Connection ID |   Legend:
-| (if any,      |
-/  length as    /   C   - Connection ID (CID) present
-|  negotiated)  |   S   - Sequence number length
-+-+-+-+-+-+-+-+-+   L   - Length present
-|  8 or 16 bit  |   E   - Epoch
-|Sequence Number|
-+-+-+-+-+-+-+-+-+
-| 16 bit Length |
-| (if present)  |
-+-+-+-+-+-+-+-+-+
+    0 1 2 3 4 5 6 7
+    +-+-+-+-+-+-+-+-+
+    |0|0|1|C|S|L|E E|
+    +-+-+-+-+-+-+-+-+
+    | Connection ID |   Legend:
+    | (if any,      |
+    /  length as    /   C   - Connection ID (CID) present
+    |  negotiated)  |   S   - Sequence number length
+    +-+-+-+-+-+-+-+-+   L   - Length present
+    |  8 or 16 bit  |   E   - Epoch
+    |Sequence Number|
+    +-+-+-+-+-+-+-+-+
+    | 16 bit Length |
+    | (if present)  |
+    +-+-+-+-+-+-+-+-+
 
-struct {
-    uint16 epoch;
-    uint48 sequence_number;
-} RecordNumber;
+    struct {
+        uint16 epoch;
+        uint48 sequence_number;
+    } RecordNumber;
 ]]></artwork>
       </section>
       <section anchor="handshake-protocol" numbered="true" toc="default">
         <name>Handshake Protocol</name>
 <sourcecode name="" type="tls-presentation"><![CDATA[
-enum {
-    hello_request_RESERVED(0),
-    client_hello(1),
-    server_hello(2),
-    hello_verify_request_RESERVED(3),
-    new_session_ticket(4),
-    end_of_early_data(5),
-    hello_retry_request_RESERVED(6),
-    encrypted_extensions(8),
-    certificate(11),
-    server_key_exchange_RESERVED(12),
-    certificate_request(13),
-    server_hello_done_RESERVED(14),
-    certificate_verify(15),
-    client_key_exchange_RESERVED(16),
-    finished(20),
-    certificate_url_RESERVED(21),
-    certificate_status_RESERVED(22),
-    supplemental_data_RESERVED(23),
-    key_update(24),
-    message_hash(254),
-    (255)
-} HandshakeType;
+    enum {
+        hello_request_RESERVED(0),
+        client_hello(1),
+        server_hello(2),
+        hello_verify_request_RESERVED(3),
+        new_session_ticket(4),
+        end_of_early_data(5),
+        hello_retry_request_RESERVED(6),
+        encrypted_extensions(8),
+        certificate(11),
+        server_key_exchange_RESERVED(12),
+        certificate_request(13),
+        server_hello_done_RESERVED(14),
+        certificate_verify(15),
+        client_key_exchange_RESERVED(16),
+        finished(20),
+        certificate_url_RESERVED(21),
+        certificate_status_RESERVED(22),
+        supplemental_data_RESERVED(23),
+        key_update(24),
+        message_hash(254),
+        (255)
+    } HandshakeType;
 
-struct {
-    HandshakeType msg_type;    /* handshake type */
-    uint24 length;             /* bytes in message */
-    uint16 message_seq;        /* DTLS-required field */
-    uint24 fragment_offset;    /* DTLS-required field */
-    uint24 fragment_length;    /* DTLS-required field */
-    select (msg_type) {
-        case client_hello:          ClientHello;
-        case server_hello:          ServerHello;
-        case end_of_early_data:     EndOfEarlyData;
-        case encrypted_extensions:  EncryptedExtensions;
-        case certificate_request:   CertificateRequest;
-        case certificate:           Certificate;
-        case certificate_verify:    CertificateVerify;
-        case finished:              Finished;
-        case new_session_ticket:    NewSessionTicket;
-        case key_update:            KeyUpdate;
-    } body;
-} Handshake;
+    struct {
+        HandshakeType msg_type;    /* handshake type */
+        uint24 length;             /* bytes in message */
+        uint16 message_seq;        /* DTLS-required field */
+        uint24 fragment_offset;    /* DTLS-required field */
+        uint24 fragment_length;    /* DTLS-required field */
+        select (msg_type) {
+            case client_hello:          ClientHello;
+            case server_hello:          ServerHello;
+            case end_of_early_data:     EndOfEarlyData;
+            case encrypted_extensions:  EncryptedExtensions;
+            case certificate_request:   CertificateRequest;
+            case certificate:           Certificate;
+            case certificate_verify:    CertificateVerify;
+            case finished:              Finished;
+            case new_session_ticket:    NewSessionTicket;
+            case key_update:            KeyUpdate;
+        } body;
+    } Handshake;
 
-uint16 ProtocolVersion;
-opaque Random[32];
+    uint16 ProtocolVersion;
+    opaque Random[32];
 
-uint8 CipherSuite[2];    /* Cryptographic suite selector */
+    uint8 CipherSuite[2];    /* Cryptographic suite selector */
 
-struct {
-    ProtocolVersion legacy_version = { 254,253 }; // DTLSv1.2
-    Random random;
-    opaque legacy_session_id<0..32>;
-    opaque legacy_cookie<0..2^8-1>;                  // DTLS
-    CipherSuite cipher_suites<2..2^16-2>;
-    opaque legacy_compression_methods<1..2^8-1>;
-    Extension extensions<8..2^16-1>;
-} ClientHello;
+    struct {
+        ProtocolVersion legacy_version = { 254,253 }; // DTLSv1.2
+        Random random;
+        opaque legacy_session_id<0..32>;
+        opaque legacy_cookie<0..2^8-1>;                  // DTLS
+        CipherSuite cipher_suites<2..2^16-2>;
+        opaque legacy_compression_methods<1..2^8-1>;
+        Extension extensions<8..2^16-1>;
+    } ClientHello;
 ]]></sourcecode>
       </section>
       <section anchor="acks" numbered="true" toc="default">
         <name>ACKs</name>
 <sourcecode name="" type="tls-presentation"><![CDATA[
-struct {
-    RecordNumber record_numbers<0..2^16-1>;
-} ACK;
+    struct {
+        RecordNumber record_numbers<0..2^16-1>;
+    } ACK;
 ]]></sourcecode>
       </section>
       <section anchor="connection-id-management" numbered="true" toc="default">
         <name>Connection ID Management</name>
 <sourcecode name="" type="tls-presentation"><![CDATA[
-enum {
-    cid_immediate(0), cid_spare(1), (255)
-} ConnectionIdUsage;
+    enum {
+        cid_immediate(0), cid_spare(1), (255)
+    } ConnectionIdUsage;
 
-opaque ConnectionId<0..2^8-1>;
+    opaque ConnectionId<0..2^8-1>;
 
-struct {
-    ConnectionId cids<0..2^16-1>;
-    ConnectionIdUsage usage;
-} NewConnectionId;
+    struct {
+        ConnectionId cids<0..2^16-1>;
+        ConnectionIdUsage usage;
+    } NewConnectionId;
 
-struct {
-  uint8 num_cids;
-} RequestConnectionId;
+    struct {
+      uint8 num_cids;
+    } RequestConnectionId;
 ]]></sourcecode>
       </section>
     </section>
@@ -2742,24 +2771,6 @@ validated?</li>
 datagram in which it is contained?</li>
       </ul>
     </section>
-
-<!-- [rfced] Contributors:  Rephrased this part of the question more clearly:
-
-b) Please confirm that you would like to list Felix Günther
-and Martin Thomson twice in the Contributors section.
-
-Original:
- Felix Guenther and
- Martin Thomson contributed the analysis in Appendix B.
-...
- * Felix Günther
-   ETH Zurich
-   mail@felixguenther.info
-...
- * Martin Thomson
-   Mozilla
-   martin.thomson@gmail.com -->
-
      <section anchor="contributors" numbered="false" toc="default">
       <name>Contributors</name>
       <t>Many people have contributed to previous DTLS versions, and they are acknowledged
@@ -2840,7 +2851,7 @@ in prior versions of DTLS specifications or in the referenced specifications.</t
 sequence number encryption concept is taken from QUIC <xref target="RFC9000"/>. We would
 like to thank the authors of RFC 9000 for their work. <contact fullname="Felix Günther"/> and <contact fullname="Martin
  Thomson"/> contributed the analysis in <xref target="ccm-bounds" format="default"/>.
-      We would like to thank <contact fullname="Jonathan Hammell"/>, <contact fullname="Bernard Aboba"/>, and <contact fullname="Andy Cunningham"/> for their review comments.</t>
+      We would like to thank <contact fullname="Jonathan Hammell"/>, <contact fullname="Bernard Aboba"/>, <contact fullname="Andy Cunningham"/>, and <contact fullname="Matthew Elvey"/> for their review comments.</t>
       <t>Additionally, we would like to thank the IESG members for their review comments: <contact fullname="Martin Duke"/>, <contact fullname="Erik Kline"/>, <contact fullname="Francesca Palombini"/>, <contact fullname="Lars Eggert"/>, <contact fullname="Zaheduzzaman Sarker"/>, <contact fullname="John Scudder"/>, <contact fullname="Éric Vyncke"/>, <contact fullname="Robert Wilton"/>, <contact fullname="Roman Danyliw"/>, <contact fullname="Benjamin Kaduk"/>, <contact fullname="Murray Kucherawy"/>, <contact fullname="Martin Vigoureux"/>, and <contact fullname="Alvaro Retana"/>.</t>
     </section>
 
