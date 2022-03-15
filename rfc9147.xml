@@ -2556,8 +2556,8 @@ as specified in <xref target="aead-limits"/> of RFC 9147.
     +-+-+-+-+-+-+-+-+
 
     struct {
-        uint16 epoch;
-        uint48 sequence_number;
+        uint64 epoch;
+        uint64 sequence_number;
     } RecordNumber;
 ]]></artwork>
       </section>
@@ -2573,6 +2573,8 @@ as specified in <xref target="aead-limits"/> of RFC 9147.
         end_of_early_data(5),
         hello_retry_request_RESERVED(6),
         encrypted_extensions(8),
+        request_connection_id(9),           /* New */
+        new_connection_id(10),              /* New */
         certificate(11),
         server_key_exchange_RESERVED(12),
         certificate_request(13),
